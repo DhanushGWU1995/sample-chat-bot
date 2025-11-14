@@ -1,0 +1,82 @@
+<div class="chat-container">
+  <div class="chat-wrapper">
+    <!-- Chat Header -->
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <h2>Chat Assistant</h2>
+        <p class="status-indicator">
+          <span class="status-dot"></span>
+          {{ sessionId ? 'Connected' : 'Connecting...' }}
+        </p>
+      </div>
+      <button class="btn-clear" (click)="clearChat()" title="Clear chat">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M6 2L14 2C14.5523 2 15 2.44772 15 3L15 5L5 5L5 3C5 2.44772 5.44772 2 6 2Z"/>
+          <path d="M3 5H17V17C17 17.5523 16.5523 18 16 18H4C3.44772 18 3 17.5523 3 17V5Z"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Messages Container -->
+    <div class="messages-container">
+      <div class="messages-wrapper">
+        <app-message 
+          *ngFor="let message of messages" 
+          [message]="message">
+        </app-message>
+
+        <!-- Loading Indicator -->
+        <div *ngIf="isLoading" class="loading-message">
+          <div class="message assistant">
+            <div class="message-content">
+              <div class="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions (shown when no messages) -->
+        <div *ngIf="messages.length <= 1" class="quick-actions">
+          <h3>Quick Actions</h3>
+          <div class="quick-actions-grid">
+            <button 
+              *ngFor="let action of quickActions" 
+              class="quick-action-btn"
+              (click)="handleQuickAction(action.text)">
+              <span class="action-icon">{{ action.icon }}</span>
+              <span class="action-text">{{ action.text }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="input-container">
+      <div class="input-wrapper">
+        <textarea
+          [(ngModel)]="userInput"
+          (keypress)="handleKeyPress($event)"
+          placeholder="Ask about refrigerator or dishwasher parts..."
+          rows="1"
+          [disabled]="isLoading"
+          class="chat-input"></textarea>
+        <button 
+          (click)="sendMessage()" 
+          [disabled]="!userInput.trim() || isLoading"
+          class="send-button"
+          title="Send message">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 8L11 13"/>
+          </svg>
+        </button>
+      </div>
+      <p class="input-hint">
+        Press <kbd>Enter</kbd> to send, <kbd>Shift + Enter</kbd> for new line
+      </p>
+    </div>
+  </div>
+</div>
